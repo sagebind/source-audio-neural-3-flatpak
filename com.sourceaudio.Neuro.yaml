@@ -1,0 +1,67 @@
+app-id: com.sourceaudio.Neuro
+runtime: org.freedesktop.Platform
+runtime-version: '23.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.openjdk21
+command: /app/bin/neuro.sh
+
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=x11
+  - --socket=pulseaudio
+  - --filesystem=host
+  - --device=all # USB device access
+
+modules:
+  - name: openjdk
+    buildsystem: simple
+    build-commands:
+      - /usr/lib/sdk/openjdk21/install.sh
+
+  # Needed to extract the contents of the macOS installer
+  - name: 7zip
+    buildsystem: simple
+    build-commands:
+      - install -D 7zz /app/bin/7z
+    sources:
+      - type: archive
+        url: "https://www.7-zip.org/a/7z2408-linux-x64.tar.xz"
+        sha256: 9b3a2edf0644a2b00b0a39ab6843f426128e4a6f6f98c40f8c02a668e5b5b59b
+        strip-components: 0
+
+  # Java build from official macOS installer
+  - name: neuro-macos-installer
+    buildsystem: simple
+    build-commands:
+      - 7z x neuro_desktop_3_0_20_260824_installer_mac.pkg
+      - 7z x Neuro_desktop.pkg/Payload
+      - 7z x 'Payload~'
+      - cp -r "Applications/Neuro Desktop.app/Contents/app" /app/app
+      - ls -la /app/app
+    sources:
+      - type: file
+        url: "https://s3.eu-north-1.amazonaws.com/bb.distribution/neuro_desktop_3_0_20_260824_installer_mac.pkg"
+        sha256: 0b1f57346975bfff7d4fc66187ef642838d7f73e33fe515293b4898657750345
+
+  # Patch in Skiko libs for Linux support not included upstream
+  - name: skiko-linux
+    buildsystem: simple
+    build-commands:
+      - install -D -t /app/app libskiko-linux-x64.so libskiko-linux-x64.so.sha256
+    sources:
+      - type: file
+        path: libs/libskiko-linux-x64.so
+      - type: file
+        path: libs/libskiko-linux-x64.so.sha256
+
+  # Custom entrypoint script, plus XDG stuff
+  - name: neuro
+    buildsystem: simple
+    build-commands:
+      - install -D neuro.sh /app/bin/neuro.sh
+      - cp -r share /app/share
+    sources:
+      - type: dir
+        path: resources

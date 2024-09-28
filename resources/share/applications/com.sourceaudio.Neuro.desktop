@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Neuro 3
+Exec=/app/bin/neuro.sh
+Icon=com.sourceaudio.Neuro
+Terminal=false
+Categories=Utility;
+StartupWMClass=com-sourceaudio-neuro-multiplatform-MainKt
