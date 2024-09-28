@@ -39,7 +39,6 @@ modules:
       - 7z x Neuro_desktop.pkg/Payload
       - 7z x 'Payload~'
       - cp -r "Applications/Neuro Desktop.app/Contents/app" /app/app
-      - ls -la /app/app
     sources:
       - type: file
         url: "https://s3.eu-north-1.amazonaws.com/bb.distribution/neuro_desktop_3_0_20_260824_installer_mac.pkg"
