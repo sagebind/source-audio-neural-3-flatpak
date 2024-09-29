@@ -13,6 +13,10 @@ finish-args:
   - --socket=pulseaudio
   - --device=all # USB device access
 
+cleanup:
+  - /app/libskiko-macos-*
+  - /bin/7z
+
 modules:
   - name: openjdk
     buildsystem: simple
