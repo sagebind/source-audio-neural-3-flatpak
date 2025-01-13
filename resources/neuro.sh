@@ -21,5 +21,5 @@ exec java \
     -Dcompose.application.configure.swing.globals=true \
     -Dcompose.application.resources.dir="$APPDIR/resources" \
     -Dskiko.library.path="$APPDIR" \
-    -classpath "$APPDIR/*" \
+    -classpath "/app/classes:$APPDIR/*" \
     $MAIN_CLASS "$@"

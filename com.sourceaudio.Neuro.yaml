@@ -38,14 +38,18 @@ modules:
   - name: neuro-macos-installer
     buildsystem: simple
     build-commands:
-      - 7z x neuro_desktop_3_0_20_260824_installer_mac.pkg
+      - 7z x neuro_desktop_3_0_23_18112024_installer_mac.pkg
       - 7z x Neuro_desktop.pkg/Payload
       - 7z x 'Payload~'
       - cp -r "Applications/Neuro Desktop.app/Contents/app" /app/app
+      # Spoof platform detection to return macOS to avoid uncaught exception startup
+      - mkdir -p /app/classes
+      - 7z x -o/app/classes /app/app/shared-jvm-* 'com/sourceaudio/neuromultiplatform/app/PlatformKt$getPlatform$1.class'
+      - sed -i 's/\x03mac/\x03lin/' '/app/classes/com/sourceaudio/neuromultiplatform/app/PlatformKt$getPlatform$1.class'
     sources:
       - type: file
-        url: "https://s3.eu-north-1.amazonaws.com/bb.distribution/neuro_desktop_3_0_20_260824_installer_mac.pkg"
-        sha256: 0b1f57346975bfff7d4fc66187ef642838d7f73e33fe515293b4898657750345
+        url: "https://s3.eu-north-1.amazonaws.com/bb.distribution/neuro_desktop_3_0_23_18112024_installer_mac.pkg"
+        sha256: 7e131ce386438f93c00856b00b59cab23767979aa3bd608614b853cd34bd9b19
 
   # Patch in Skiko libs for Linux support not included upstream
   - name: skiko-linux
